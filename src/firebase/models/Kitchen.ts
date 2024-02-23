@@ -5,8 +5,8 @@ import {DEFAULT_KITCHEN_SCHEMA} from "../constants";
 
 export default class KitchenDB{
     kitchenID: string;
-    db: Database;
-    root: string;
+    private db: Database;
+    private root: string;
 
     constructor(kitchenID: string){
         this.db = db;
@@ -19,6 +19,12 @@ export default class KitchenDB{
         const snapshot = await get(ref(this.db,`${this.root}/name`));
         return snapshot.val();
     }
+
+    public async getKitchenImageURL(){
+        const snapshot = await get(ref(this.db,`${this.root}/image_url`));
+        return snapshot.val();
+    }
+
 
     public async onAssigneeChange(day: string, callback: (chef_id: string) => void){
         onValue(ref(this.db,`${this.root}/week/${day}/chef_id`), (snapshot) => {

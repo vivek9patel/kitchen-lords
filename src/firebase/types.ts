@@ -1,12 +1,15 @@
+export type Kitchens = {
+    [kitchen_id: string]: {
+        position: string;
+        is_admin: boolean;
+    };
+}
+
 export type Chef = {
     email: string;
     name: string;
-    kitchens: {
-        [kitchen_id: string]: {
-            position: string;
-            is_admin: boolean;
-        };
-    };
+    url: string;
+    kitchens: Kitchens;
     is_god: boolean;
 };
 
@@ -36,6 +39,7 @@ export type Day = {
 export type Kitchen = {
     name: string;
     week: Week;
+    image_url: string;
 };
 
 export type Reaction = '👎' | '👍' | '😍' | '🥳' | '💗';

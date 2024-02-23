@@ -2,6 +2,7 @@ import { Kitchen } from "./types";
 
 export const DEFAULT_KITCHEN_SCHEMA: Kitchen = {
     "name": "Vivek's Kitchen",
+    "image_url": "",
     "week": {
         "monday": {
             "day": "monday",

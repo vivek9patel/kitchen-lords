@@ -1,28 +1,32 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import {auth} from './index';
+import Cookies from "js-cookie";
+import { redirect } from 'next/navigation';
 
 export const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
+       const credential = GoogleAuthProvider.credentialFromResult(result);
         if(credential){
-            const token = credential.accessToken;
-            const user = result.user;
-            return {token, user};
+            Cookies.set("currentUser", JSON.stringify(result.user));
+            redirect(`/user/${result.user.uid}`);
         }
         else {
             throw new Error("Credential not found");
         }
       }).catch((error) => {
         console.log(error);
+        Cookies.remove("currentUser");
+        redirect("/");
       })
 
 }
 
-export const signOut = async () => {
+export const signOut = () => {
     auth.signOut().then(() => {
+        Cookies.remove("currentUser");
         console.log("Signout successful");
+        redirect("/");
       }).catch((error) => {
         console.log(error);
       });
