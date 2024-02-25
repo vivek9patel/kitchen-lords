@@ -1,17 +1,26 @@
-import {db} from '../index';
+import {getFirebaseDB} from '../index';
 import { ref, update, Database, onValue, get, set } from "firebase/database";
-import { DishType, Reaction, Kitchen } from '../types';
+import { DishType, Reaction, Kitchen, Day } from '../types';
 import {DEFAULT_KITCHEN_SCHEMA} from "../constants";
 
-export default class KitchenDB{
+export default  class KitchenDB{
+    private static _instance: KitchenDB | null = null;
     kitchenID: string;
     private db: Database;
     private root: string;
 
     constructor(kitchenID: string){
-        this.db = db;
+        this.db = getFirebaseDB();
         this.kitchenID = kitchenID;
         this.root = `kitchen/${kitchenID}`;
+    }
+
+    public static getInstance(kitchenID: string): KitchenDB{
+        if (!KitchenDB._instance) {
+            KitchenDB._instance = new KitchenDB(kitchenID);
+          }
+          KitchenDB._instance.setId(kitchenID);
+          return KitchenDB._instance;
     }
 
     // get methods
@@ -25,6 +34,18 @@ export default class KitchenDB{
         return snapshot.val();
     }
 
+    public async getDay(day: string): Promise<Day>{
+        const snapshot = await get(ref(this.db,`${this.root}/week/${day}`));
+        return snapshot.val() || {
+            day: day,
+            chef_id: "",
+            comments: {},
+            reactions: {},
+            dish_style: "",
+            dish_name: ""
+        };
+    }
+
 
     public async onAssigneeChange(day: string, callback: (chef_id: string) => void){
         onValue(ref(this.db,`${this.root}/week/${day}/chef_id`), (snapshot) => {
@@ -35,7 +56,7 @@ export default class KitchenDB{
 
     public async onReactionChange(day: string, callback: (reactions: {[chef_id: string]: Reaction}) => void){
         onValue(ref(this.db,`${this.root}/week/${day}/reactions`), (snapshot) => {
-            const data = snapshot.val();
+            const data = snapshot.val() || {};
             callback(data);
         });
     }
@@ -102,14 +123,19 @@ export default class KitchenDB{
     public async removeDish(day: string){
         await update(ref(this.db,`${this.root}/week/${day}`), {dish_name: null, dish_style: null, chef_id: null});
     }
+
+    public setId(kitchenID: string){
+        this.kitchenID = kitchenID;
+        this.root = `kitchen/${kitchenID}`;
+    }
 }
 
 export async function createKitchen(kitchenID: string, kitchenName: string){
-    const kitchenRef = ref(db, `kitchen/${kitchenID}`);
+    const kitchenRef = ref(getFirebaseDB(), `kitchen/${kitchenID}`);
     const kitchenData: Kitchen = {
         ...DEFAULT_KITCHEN_SCHEMA,
         name: kitchenName
     }
     await set(kitchenRef, kitchenData);
-    return new KitchenDB(kitchenID);
-  }
+    return KitchenDB.getInstance(kitchenID);
+}

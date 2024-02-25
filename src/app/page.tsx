@@ -11,7 +11,9 @@ export default function Home() {
         A dinner chef planner for your favourite rommies.
       </div>
       <DashboardButton/>
-      <AuthButton />
+      <div className="mt-10 max-w-52">
+        <AuthButton />
+      </div>
     </div>
   );
 }

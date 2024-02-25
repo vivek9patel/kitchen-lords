@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import Chef from "./firebase/models/Chef";
+import ChefDB from "./firebase/models/Chef";
+import md5 from "md5";
 
 export async function middleware(request: NextRequest) {
   const currentUser = request.cookies.get("currentUser")?.value;
-  if (!currentUser) {
+if (!currentUser) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   const user = JSON.parse(currentUser);
-  if(!user.uid){
+  if(!user.email){
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  const chef = ChefDB.getInstance(user.email);
+  // check if user has access to site
+  const hasAccess = await chef.getIsAuthorized();
+  if(!hasAccess){
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -17,11 +25,11 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/user')) {
     // no user id
     if (request.nextUrl.pathname === '/user') {
-      return NextResponse.redirect(new URL('/user/' + user.uid, request.url));
+      return NextResponse.redirect(new URL('/user/' + md5(user.email), request.url));
     }
     // user id but not the same as current user
-    if (request.nextUrl.pathname !== '/user/' + user.uid) {
-      return NextResponse.redirect(new URL('/user/' + user.uid, request.url));
+    if (request.nextUrl.pathname !== '/user/' + md5(user.email)) {
+      return NextResponse.redirect(new URL('/user/' + md5(user.email), request.url));
     }
     return NextResponse.next();
   }
@@ -29,13 +37,12 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/kitchen')) {
     // no kitchen id
     if (request.nextUrl.pathname === '/kitchen') {
-      return NextResponse.redirect(new URL('/user/' + user.uid, request.url));
+      return NextResponse.redirect(new URL('/user/' + md5(user.email), request.url));
     }
     // kitchen id but not accessible by logged in user
-    const chef = new Chef(user.uid);
     const kitchens = await chef.getKitchens();
     if (!kitchens[request.nextUrl.pathname.split('/')[2]]) {
-      return NextResponse.redirect(new URL('/user/' + user.uid, request.url));
+      return NextResponse.redirect(new URL('/user/' + md5(user.email), request.url));
     }
     return NextResponse.next();
   }

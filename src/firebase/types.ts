@@ -11,6 +11,7 @@ export type Chef = {
     url: string;
     kitchens: Kitchens;
     is_god: boolean;
+    has_access: boolean;
 };
 
 export type Week = {

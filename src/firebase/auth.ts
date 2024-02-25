@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import {auth} from './index';
 import Cookies from "js-cookie";
+import md5 from 'md5';
 
 export const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -8,7 +9,7 @@ export const signInWithGoogle = async () => {
        const credential = GoogleAuthProvider.credentialFromResult(result);
         if(credential){
             Cookies.set("currentUser", JSON.stringify(result.user));
-            window.location.href = `/user/${result.user.uid}`;
+            if(typeof result.user.email === "string") window.location.href = `/user/${md5(result.user.email)}`;
         }
         else {
             throw new Error("Credential not found");
