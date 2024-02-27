@@ -15,18 +15,12 @@ export type Chef = {
 };
 
 export type Week = {
-    monday: Day;
-    tuesday: Day;
-    wednesday: Day;
-    thursday: Day;
-    friday: Day;
-    saturday: Day;
-    sunday: Day;
+    [day: string]: Day;
 };
 
 export type Day = {
     day: string;
-    chef_id: string;
+    chef_id: string; // this is actually chef's email - sorry
     comments: {
         [chef_id: string]: string;
     };

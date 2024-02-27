@@ -61,12 +61,14 @@ export function ReactionModal({reactions, modal_id}: {reactions: {
     return (
         <dialog id={`reaction-modal-${modal_id}`} className="modal modal-bottom sm:modal-middle">
             <div className="modal-box">
-                <h3 className="font-bold text-lg">Hello! {`reaction-modal-${modal_id}`}</h3>
-                <p className="py-4">Press ESC key or click the button below to close</p>
+                <h3 className="font-bold text-lg">Do your roomies like it?</h3>
+                <p className="py-4">
+                    
+                </p>
                 <div className="modal-action">
-                <form method="dialog">
-                    <button className="btn">Close</button>
-                </form>
+                    <form method="dialog">
+                        <button className="btn">Close</button>
+                    </form>
                 </div>
             </div>
         </dialog>

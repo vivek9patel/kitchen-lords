@@ -1,7 +1,6 @@
 import DayPanel from "@/components/DayPanel";
 import Header from "@/components/header";
-import ChefDB from "@/firebase/models/Chef";
-import KitchenDB from "@/firebase/models/Kitchen";
+import { fetchChefByEmail, fetchKitchenDay, fetchKitchenName, fetchKitchenWeek } from "@/firebase/server";
 import { Day } from "@/firebase/types";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -12,8 +11,7 @@ export async function generateMetadata(
         params: { kitchen: string }
     }
   ): Promise<Metadata> {
-    const kitchen = KitchenDB.getInstance(params.kitchen);
-    const kitchenName = await kitchen.getKitchenName();
+    const kitchenName = await fetchKitchenName(params.kitchen);
     return {
       title: `Kitchen Lords | ${kitchenName}`,
     }
@@ -26,18 +24,22 @@ export default async function Page({ params }: { params: { kitchen: string } }) 
       return "No logged in user";
     }
 
+    const kitchenWeek = await fetchKitchenWeek(params.kitchen);
+
     return (
       <>
         <div className="px-4 py-2">
             <Header title={"Dpv lords @2111"} isKitchenPage={true} />
             <div className="flex w-full justify-center">
               <div className="px-8 py-4 overflow-x-auto w-full xl:w-4/5 flex flex-col">
-                  {["monday"].map(async (day_name) => {
-                        const day: Day = await KitchenDB.getInstance(params.kitchen).getDay(day_name);
-                        const assignee = await ChefDB.getInstance(day.chef_id).get();
+                  {
+                    Object.keys(kitchenWeek).map(async (day_name) => {
+                        const day = kitchenWeek[day_name];
+                        const assignee = await fetchChefByEmail(day.chef_id);
                         const unassigned = day.chef_id.length === 0;
-                        return <DayPanel key={day_name} day={day} assignee={assignee} kitchen_id={params.kitchen} unassigned={unassigned}/>
-                    })}
+                        return <DayPanel key={day.day} day={day} assignee={assignee} kitchen_id={params.kitchen} unassigned={unassigned}/>
+                    })
+                  }
               </div>
             </div>
         </div>

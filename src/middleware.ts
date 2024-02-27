@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import ChefDB from "./firebase/models/Chef";
 import md5 from "md5";
+import { fetchChefKitchens, fetchIfAuthorized } from "./firebase/server";
 
 export async function middleware(request: NextRequest) {
   const currentUser = request.cookies.get("currentUser")?.value;
@@ -14,10 +14,9 @@ if (!currentUser) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  const chef = ChefDB.getInstance(user.email);
   // check if user has access to site
-  const hasAccess = await chef.getIsAuthorized();
-  if(!hasAccess){
+  const hasAccess = await fetchIfAuthorized(user.email);
+  if(!hasAccess.isAuthorized){
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -40,7 +39,7 @@ if (!currentUser) {
       return NextResponse.redirect(new URL('/user/' + md5(user.email), request.url));
     }
     // kitchen id but not accessible by logged in user
-    const kitchens = await chef.getKitchens();
+    const kitchens = await fetchChefKitchens(user.email);
     if (!kitchens[request.nextUrl.pathname.split('/')[2]]) {
       return NextResponse.redirect(new URL('/user/' + md5(user.email), request.url));
     }

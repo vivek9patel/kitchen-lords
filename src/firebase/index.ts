@@ -1,5 +1,4 @@
 import { initializeApp} from "firebase/app";
-import { getDatabase, Database } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 const app = initializeApp({
@@ -10,20 +9,6 @@ const app = initializeApp({
   "messagingSenderId": process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
   "appId": process.env.NEXT_PUBLIC_APP_ID
 });
-
-
-let dbInstance: Database | null = null;
-
-export const getFirebaseDB = (): Database => {
-  if (!dbInstance) {
-    console.log('Creating new db instance');
-    dbInstance = getDatabase(app);
-  }
-  else {
-    console.log('Using existing db instance');
-  }
-  return dbInstance;
-};
 
 export const auth = getAuth(app);
 
