@@ -1,6 +1,6 @@
 import KitchenCard from "@/components/KitchenCard";
 import Header from "@/components/header";
-import { fetchChefById, fetchKitchenImage, fetchKitchenName } from "@/firebase/server";
+import { fetchChefById } from "@/firebase/server";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -15,8 +15,9 @@ if (!currentUser) {
   }
 
   // check if user has access to site
-  const hasAccess = await fetchIfAuthorized(user.email);
-  if(!hasAccess.isAuthorized){
+  const {isAuthorized} = await fetchIfAuthorized(user.email);
+  console.log("isAuthorized", isAuthorized);
+  if(!isAuthorized){
     return NextResponse.redirect(new URL('/', request.url));
   }
 
