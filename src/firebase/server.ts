@@ -15,12 +15,9 @@ export const fetchChefKitchens = async (email: string): Promise<Kitchens> => {
     return response.json();
 }
 
-export const fetchIfAuthorized = async (email?: string, id?: string): Promise<{isAuthorized: boolean}> => {
-    if (id) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chef/authorized?id=${id}`);
-        return response.json();
-    }
+export const fetchIfAuthorized = async (email: string): Promise<{isAuthorized: boolean}> => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chef/authorized?email=${email}`);
+    console.log("fetchIfAuthorized", response);
     return await response.json();
 }
 
