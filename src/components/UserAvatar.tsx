@@ -49,10 +49,10 @@ export default function UserAvatar({photoURL, displayName}: {photoURL: string, d
     else if(displayName){
         return (
             <div className={`avatar placeholder`}>
-            <div className={`bg-neutral text-neutral-content rounded-full w-12 ${bgColorClassByContent[displayName]}`}>
-                <span className="text-xl">{getInitials(displayName)}</span>
-            </div>
-        </div> 
+                <div className={`bg-neutral text-neutral-content rounded-full w-12 ${bgColorClassByContent[displayName]}`}>
+                    <span className="text-xl">{getInitials(displayName)}</span>
+                </div>
+            </div> 
         )
     }
 

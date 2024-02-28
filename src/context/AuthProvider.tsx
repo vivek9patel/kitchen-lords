@@ -1,9 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from '../firebase/auth';
+import { Chef } from '@/firebase/types';
+import { fetchChefByEmail } from '@/firebase/server';
 
 type IAuthContext = {
-    user: any;
+    user: Chef | null;
 };
 
 export const AuthContext = React.createContext<IAuthContext>({ user: null});
@@ -13,7 +15,14 @@ export default function AuthProvider({ children }: Readonly<{ children: React.Re
 
     useEffect(() => {
         onAuthStateChanged((user) => {
-            setAuth({ user: user });
+            if(user.email){
+                fetchChefByEmail(user.email).then((chef) => {
+                    setAuth({ user: chef });
+                });
+            }
+            else{
+                setAuth({ user: null });
+            }
         });
     }, []);
 

@@ -12,12 +12,12 @@ const lightBrightBgColorClasses = [
     'bg-pink-100',
 ]
 
-export default function Badge({content}: {content: string}){
+export default function Badge({content, size='text-xs'}: {content: string, size?: string}){
     if(!bgColorClassByContent.hasOwnProperty(content)){
         const bgColor = lightBrightBgColorClasses[Math.floor(Math.random() * lightBrightBgColorClasses.length)];
         bgColorClassByContent[content] = bgColor;
     }
     return (
-        <div className={`font-light text-xs px-1 border border-primary ${bgColorClassByContent[content]} text-primary-content border-opacity-50 rounded-xl capitalize max-w-44 whitespace-nowrap text-ellipsis overflow-hidden`}>{content}</div>
+        <div className={`font-light max-w-44 px-1 ${size} border border-primary ${bgColorClassByContent[content]} text-primary-content border-opacity-50 rounded-xl capitalize whitespace-nowrap text-ellipsis overflow-hidden shadow-slate-400 glass`}>{content}</div>
     )
 }

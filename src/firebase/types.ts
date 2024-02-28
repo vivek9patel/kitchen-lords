@@ -37,6 +37,6 @@ export type Kitchen = {
     image_url: string;
 };
 
-export type Reaction = '👎' | '👍' | '😍' | '🥳' | '💗';
+export type Reaction = '👎' | '🤮' | '👍' | '😍' | '🥳' | '💗';
 
-export type DishType = 'italian' | 'indian' | 'mexican' | 'gujarati' | 'punjabi' | 'other';
+export type DishType = 'italian' | 'indian' | 'mexican' | 'other';
