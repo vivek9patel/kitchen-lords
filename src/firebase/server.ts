@@ -17,6 +17,7 @@ export const fetchChefByEmail = async (email: string): Promise<Chef> => {
 
 export const fetchChefKitchens = async (email: string): Promise<Kitchens> => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chef/kitchens?email=${email}`);
+    console.log("response", response.status, JSON.stringify(response) );
     return response.json();
 }
 
