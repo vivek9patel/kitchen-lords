@@ -153,7 +153,11 @@ export default function DayPanel({currentUserEmail, default_day, kitchen_id}: {c
                     }
                 </div>
                 <div className="text-center col-span-2 sm:text-base text-sm">
-                    <div className="font-bold capitalize sm:w-64 whitespace-nowrap text-ellipsis overflow-hidden">{day.dish_name}</div>
+                    <div className="font-bold capitalize sm:w-64 whitespace-nowrap text-ellipsis overflow-hidden link-hover">
+                        <a href={`https://www.youtube.com/results?search_query=${day.dish_name}`} target="_blank">
+                            {day.dish_name}
+                        </a>
+                    </div>
                     <div className="text-sm opacity-50 capitalize sm:w-64 whitespace-nowrap text-ellipsis overflow-hidden">{day.dish_style}</div>
                 </div>
                 <Reactions reactions={day.reactions || {}} day_id={day.day} />
