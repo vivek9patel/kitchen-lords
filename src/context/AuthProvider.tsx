@@ -15,7 +15,7 @@ export default function AuthProvider({ children }: Readonly<{ children: React.Re
 
     useEffect(() => {
         onAuthStateChanged((user) => {
-            if(user.email){
+            if(user?.email){
                 fetchChefByEmail(user.email).then((chef) => {
                     setAuth({ user: chef });
                 });

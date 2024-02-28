@@ -1,11 +1,13 @@
 "use client";
-import { Day } from "@/firebase/types";
-import { useState } from "react";
+import { Chef, Day } from "@/firebase/types";
+import { useContext, useState } from "react";
 import { ALLOWED_DISH_STYLES } from "./DayPanel";
+import { ChefsContext } from "@/context/ChefsProvider";
+import { AuthContext } from "@/context/AuthProvider";
 
-export default function UnAssignedPanel({day, updateDish}: {day: Day, updateDish: (dishName: string, dishStyle: string) => Promise<void>;}) {
+export default function UnAssignedPanel({day, updateDish}: {day: Day, updateDish: (dishName: string, dishStyle: string, godAssignee?: Chef) => Promise<void>;}) {
    return (
-            <div className={`border relative rounded-xl my-4 py-2 flex justify-evenly items-center gap-4 border-orange-300 border-opacity-50 bg-opacity-50`}>
+            <div className={`border relative rounded-xl my-4 py-2 flex justify-evenly items-center gap-4 border-neutral-300 opacity-50`}>
                 <div className=" min-w-28 ">
                     <div className="font-bold capitalize">{day.day}</div>
                 </div>
@@ -24,10 +26,16 @@ export default function UnAssignedPanel({day, updateDish}: {day: Day, updateDish
     );
 }
 
-export function AddAssigneeModal({day_name, modal_id, updateDish}: {day_name: string, modal_id: string, updateDish: (dishName: string, dishStyle: string) => Promise<void>;}) {
+export function AddAssigneeModal({day_name, modal_id, updateDish}: {day_name: string, modal_id: string, updateDish: (dishName: string, dishStyle: string, godAssignee?: Chef) => Promise<void>;}) {
     const [dishName, setDishName] = useState('');
     const [dishStyle, setDishStyle] = useState('');
     const [disabled, setDisabled] = useState(false);
+    const [godAssignedAssignee, setGodAssignedAssignee] = useState<Chef | null>(null);
+
+    const {kitchenChefs} = useContext(ChefsContext);
+    const {user: currentUser} = useContext(AuthContext);
+
+    const isGod = currentUser?.is_god || false;
 
     const handleDishNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDishName(e.target.value);
@@ -40,11 +48,16 @@ export function AddAssigneeModal({day_name, modal_id, updateDish}: {day_name: st
     const handleSubmit = () => {
         if(disabled) return;
         setDisabled(true);
-        updateDish(dishName, dishStyle).then(()=>{
+        updateDish(dishName, dishStyle, godAssignedAssignee || undefined).then(()=>{
             const modal = document.getElementById(`add-assignee-modal-${modal_id}`) as HTMLDialogElement | null ;
             if(modal) modal.close();
             setDisabled(false);
         });
+    }
+
+    const handleGodAssginee = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const chef_id = e.target.value;
+        setGodAssignedAssignee(kitchenChefs[chef_id]);
     }
 
     return (
@@ -62,6 +75,16 @@ export function AddAssigneeModal({day_name, modal_id, updateDish}: {day_name: st
                             ALLOWED_DISH_STYLES.map((style, index) => <option key={index} value={style}>{style}</option>)
                         }
                     </select>
+                    {
+                        isGod && (
+                            <select onChange={handleGodAssginee} className="select select-bordered w-full my-2 capitalize" defaultValue={"DEFAULT"}>
+                                <option disabled value={"DEFAULT"}>Assign someone</option>
+                                {
+                                    Object.keys(kitchenChefs).map((chef_id, index) => <option key={index} value={chef_id}>{kitchenChefs[chef_id].name}</option>)
+                                }
+                            </select>
+                        )
+                    }
                 </div>
                 <div className="modal-action">
                     <form method="dialog">

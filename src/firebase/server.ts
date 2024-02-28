@@ -6,7 +6,7 @@ const getCookie = async (name: string) => {
 }
 
 export const fetchChefById = async (id: string): Promise<Chef> => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chef?id=${id}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chef?id=${id}`,{ cache: 'no-store' });
     return response.json();
 }
 
@@ -88,6 +88,26 @@ export const updateKitchenDayReaction = async (id: string, chef_id: string, day:
             chef_id,
             day,
             reaction
+        })          
+    });
+    return response.json();
+}
+
+export const deleteKitchenDayDishAndAssignee = async (id: string, day: string, chef_id: string): Promise<any> => {
+    const currentUser = JSON.parse(await getCookie('currentUser'));
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/kitchen/day/assign`, {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': window.location.origin,
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Z-Key',
+            'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS'
+        } ,
+        body: JSON.stringify({
+            uid: currentUser.email,
+            id,
+            day,
+            chef_id
         })          
     });
     return response.json();

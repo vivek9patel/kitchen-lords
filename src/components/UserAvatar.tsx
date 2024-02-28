@@ -27,18 +27,19 @@ const darkBrightBgColorClasses = [
     'bg-info-content',
 ]
 
-export default function UserAvatar({photoURL, displayName}: {photoURL: string, displayName: string}) {
+export default function UserAvatar({photoURL, displayName, isGod}: {photoURL: string, displayName: string, isGod?: boolean}) {
     if(!bgColorClassByContent.hasOwnProperty(displayName)){
         const bgColor = darkBrightBgColorClasses[Math.floor(Math.random() * darkBrightBgColorClasses.length)];
         bgColorClassByContent[displayName] = bgColor;
     }
+    const godClass = isGod ? "border-2 border-accent" : "";
     if(photoURL) {
             return (<div
                 tabIndex={0}
                 role="button"
-                className={`btn btn-ghost btn-circle avatar`}
+                className={`btn btn-ghost btn-circle avatar border-2 ${godClass} md:btn-md btn-sm`}
             >
-                <div className="w-10 rounded-full">
+                <div className="md:w-10 w-8 rounded-full">
                 <img
                     alt="User Avatar"
                     src={photoURL}
@@ -48,9 +49,9 @@ export default function UserAvatar({photoURL, displayName}: {photoURL: string, d
     }
     else if(displayName){
         return (
-            <div className={`avatar placeholder`}>
-                <div className={`bg-neutral text-neutral-content rounded-full w-12 ${bgColorClassByContent[displayName]}`}>
-                    <span className="text-xl">{getInitials(displayName)}</span>
+            <div tabIndex={0} role="button" className={`btn btn-ghost btn-circle avatar placeholder md:btn-md btn-sm`}>
+                <div className={`bg-neutral text-neutral-content rounded-full md:w-10 w-8 ${bgColorClassByContent[displayName]}`}>
+                    <span className="md:text-xl text-lg">{getInitials(displayName)}</span>
                 </div>
             </div> 
         )

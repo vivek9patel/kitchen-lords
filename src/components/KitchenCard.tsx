@@ -8,8 +8,8 @@ export default async function KitchenCard({ kitchen_id, position }: { kitchen_id
     const url = await fetchKitchenImage(kitchen_id);
 
     return (
-        <Link href={`/kitchen/${kitchen_id}`} className="card w-96 mx-4 my-4 bg-primary bg-opacity-10 hover:bg-opacity-5 hover:cursor-pointer hover:shadow-2xl border-2 border-neutral hover:border-secondary hover:border-opacity-30 shadow-xl transition-all duration-300">
-            <figure className="px-10 pt-10">
+        <Link href={`/kitchen/${kitchen_id}`} className="card w-96 mx-4 my-4 bg-teal-100 bg-opacity-10 hover:bg-opacity-5 hover:cursor-pointer hover:shadow-2xl border-2 border-neutral hover:border-secondary hover:border-opacity-30 shadow-xl transition-all duration-300">
+            <figure className="px-6 sm:px-10 pt-10">
                 <Image src={url} alt={`${kitchen_name} cover photo`} className="rounded-xl border" width={300} height={100} />
             </figure>
             <div className="card-body items-center text-center">

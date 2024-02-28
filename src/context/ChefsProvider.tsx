@@ -5,22 +5,26 @@ import { fetchKitchenChefs } from '@/firebase/server';
 
 type IChefsContext = {
     loading: boolean;
-    kitchenChefs: Chef[];
+    kitchenChefs: {[chef_id:string]: Chef};
     setKitchenId: (kitchenId: string) => void;
 };
 
-export const ChefsContext = React.createContext<IChefsContext>({loading: false, kitchenChefs: [], setKitchenId: () => {}});
+export const ChefsContext = React.createContext<IChefsContext>({loading: false, kitchenChefs: {}, setKitchenId: () => {}});
 
 export default function ChefsProvider({ children }: Readonly<{ children: React.ReactNode }>) {
-    const [kitchenChefs, setKitchenChefs] = useState<{loading: boolean, kitchenChefs: Chef[]}>({loading: false, kitchenChefs: []});
+    const [kitchenChefs, setKitchenChefs] = useState<{loading: boolean, kitchenChefs: {[chef_id:string]: Chef}}>({loading: false, kitchenChefs: {}});
     const [kitchenId, setKitchenId] = useState<string | null>(null);
     useEffect(() => {
-        setKitchenChefs({loading: true, kitchenChefs: []});
+        setKitchenChefs({loading: true, kitchenChefs: {}});
         if(kitchenId){
             fetchKitchenChefs(kitchenId).then((chefs) => {
-                setKitchenChefs({loading: false, kitchenChefs: chefs});
+                const newKitchenChefs: {[chef_id:string]: Chef} = {};
+                chefs.forEach((chef) => {
+                    newKitchenChefs[chef.email] = chef;
+                });
+                setKitchenChefs({loading: false, kitchenChefs: newKitchenChefs});
             }).catch((error) => {
-                setKitchenChefs({loading: false, kitchenChefs: []});
+                setKitchenChefs({loading: false, kitchenChefs: {}});
             })
         }
     }, [kitchenId]);
