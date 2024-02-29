@@ -58,7 +58,7 @@ export const updateKitchenDayDishAndAssignee = async (id: string, day: string, c
         method: "PUT",
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': window.location.origin,
+            'Access-Control-Allow-Origin': "*",
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Z-Key',
             'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS'
         } ,
@@ -80,7 +80,7 @@ export const updateKitchenDayReaction = async (id: string, chef_id: string, day:
         method: "PUT",
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': window.location.origin,
+            'Access-Control-Allow-Origin': "*",
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Z-Key',
             'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS'
         } ,
@@ -101,7 +101,7 @@ export const deleteKitchenDayDishAndAssignee = async (id: string, day: string, c
         method: "DELETE",
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': window.location.origin,
+            'Access-Control-Allow-Origin': "*",
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Z-Key',
             'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS'
         } ,
@@ -110,6 +110,23 @@ export const deleteKitchenDayDishAndAssignee = async (id: string, day: string, c
             id,
             day,
             chef_id
+        })          
+    });
+    return response.json();
+}
+
+export const resetDaysInAllKitchens= async (uid: string, day: string): Promise<any> => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/kitchens/day/assignee`, {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': "*",
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Z-Key',
+            'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS'
+        } ,
+        body: JSON.stringify({
+            uid,
+            day
         })          
     });
     return response.json();

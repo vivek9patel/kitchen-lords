@@ -1,0 +1,8 @@
+{
+    "crons": [
+      {
+        "path": "/api/remove-assignee",
+        "schedule": "30 23 * * *"
+      }
+    ]
+  }
